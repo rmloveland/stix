@@ -1,0 +1,23 @@
+#!/usr/local/bin/perl
+
+use strict;
+use warnings;
+use DB_File;
+use File::Slurp;
+
+tie my %index, 'DB_File', 'index' or die $!;
+my @buffer;
+
+for my $k (sort { $a <=> $b } keys %index) {
+  open my $fh, $index{$k} or die $!;
+  print "opened $index{$k} at position $k\n";
+  my $it = read_file( $fh, binmode => ':raw' );
+  push @buffer, $it;
+  close $fh;
+}
+
+untie %index;
+
+open F, '>', 'REBUILT_FILE' or die $!;
+print F $_ for @buffer;
+close F;

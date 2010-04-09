@@ -1,0 +1,43 @@
+#!/usr/local/bin/perl
+
+use strict;
+use warnings;
+use Digest::SHA qw/ sha1_hex /;
+use DB_File;
+
+tie my %index, 'DB_File', 'index' or die $!;
+open FILE, shift or die $!;
+my $pos = 0;
+
+while(<FILE>) {
+  my $piece = $_;
+  my $name = sha1_hex($piece);
+  create_random_file_for($piece, { named => $name });
+  add_to_index($name, { at => $pos });
+  $pos++;
+}
+
+close FILE;
+untie %index;
+
+sub create_random_file_for {
+  my ($bite, $thing) = @_;
+  my $name = $thing->{named};
+  open F, '>', $name or die $!;
+  binmode F;
+  print F $bite;
+  close F;
+}
+
+sub add_to_index {
+  my ($name, $thing) = @_;
+  my $position = $thing->{at};
+  $index{$position} = $name;
+}
+
+__END__
+
+=cut
+
+=head1 This describes a program, splits, which splits a program into
+files of a specified size.

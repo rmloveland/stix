@@ -1,0 +1,12 @@
+#!/usr/local/bin/perl
+
+use strict;
+use warnings;
+use DB_File;
+use Data::Dumper;
+
+tie my %index, 'DB_File', 'index' or die $!;
+for my $k (sort { $a <=> $b } keys %index) {
+  print "$k => $index{$k}\n";
+}
+untie %index;
