@@ -1,1 +1,8 @@
-stix: simple template for information exchange.
+stix: simple tool for information exchange.
+
+this script splits a file into equally-sized pieces for transport. It stores information about which pieces go where in a Berkeley DB file. There are three small programs here:
+
+
+split_file - this breaks the file into chunks and stores their locations in the index
+dump_index - dumps the index to STDOUT for debugging
+rebuild_from_index - rebuilds the original file using the index and various pieces
